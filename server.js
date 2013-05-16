@@ -1,20 +1,15 @@
-var http = require('http'),
-    url = require('url'),
-    path = require('path'),
-    fs = require('fs')
-    port = process.argv[2];
+var fs      = require('fs'),
+    port    = process.argv[2],
+    express = require('express');
 
-http.createServer(function(request, response) {
+var app = express();
+app.use(app.router);
+
+app.get('/', function(request, response){
   console.log('Request received');
+  response.send('<html><body><h1>Hello world! <small>' + new Date() + '</small></h1></body></html>');
+});
 
-  var uri = url.parse(request.url).pathname
-    , filename = path.join(process.cwd(), uri);
+console.log('Server running at\n  => http://localhost:' + port + '/\nCTRL + C to shutdown');
 
-  fs.exists(filename, function(exists) {
-    response.writeHead(200);
-    response.write('<html><body><h1>Hello world!</h1></body></html>');
-    response.end();
-  });
-}).listen(parseInt(port, 10));
-
-console.log('Static file server running at\n  => http://localhost:' + port + '/\nCTRL + C to shutdown');
+app.listen(port);
