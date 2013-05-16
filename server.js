@@ -25,16 +25,6 @@ app.get('/stream', function(req, res) {
     res.write('data: ' + (new Date()) + '\n\n'); // Note the extra newline
   }, 1000);
 
-  // The 'close' event is fired when a user closes their browser window.
-  // In that situation we want to make sure our redis channel subscription
-  // is properly shut down to prevent memory leaks...and incorrect subscriber
-  // counts to the channel.
-  req.on("close", function() {
-    console.log(interval);
-    clearInterval(interval);
-    console.log('Event Source closed');
-  });
-
   //send headers for event-stream connection
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -43,6 +33,15 @@ app.get('/stream', function(req, res) {
   });
   res.write('\n');
 
+  // The 'close' event is fired when a user closes their browser window.
+  // In that situation we want to make sure our redis channel subscription
+  // is properly shut down to prevent memory leaks...and incorrect subscriber
+  // counts to the channel.
+  req.on('close', function() {
+    console.log(interval);
+    clearInterval(interval);
+    console.log('Event Source closed');
+  });
 });
 
 console.log('Server running at\n  => http://localhost:' + port + '/\nCTRL + C to shutdown');
