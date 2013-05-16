@@ -13,8 +13,14 @@ app.get('/', function(request, response){
 
 app.get('/stream', function(req, res) {
   // let request last as long as possible
-  // req.socket.setTimeout(Infinity);
-  req.socket.setTimeout(10000);
+  req.socket.setTimeout(Infinity);
+
+  var autoclose = setInterval(function(){
+    try{
+      console.log('autoclose?');
+      req._session.recv.didClose();
+    } catch (x) {}
+  }, 5000);
 
   messageCount = 0;
 
@@ -39,6 +45,7 @@ app.get('/stream', function(req, res) {
   // is properly shut down to prevent memory leaks...and incorrect subscriber
   // counts to the channel.
   req.on('close', function() {
+    clearInterval(autoclose);
     console.log(interval);
     clearInterval(interval);
     console.log('Event Source closed');
