@@ -1,0 +1,17 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="console"></div>
+
+<script type="text/javascript">
+  var source = new EventSource('/stream');
+
+  source.addEventListener('newcontent', function(e) { // note: 'newcontent'
+    console.log(e.data);
+  }, false);
+</script>
+
+
+  </body>
+</html>
