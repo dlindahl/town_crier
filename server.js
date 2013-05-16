@@ -15,13 +15,6 @@ app.get('/stream', function(req, res) {
   // let request last as long as possible
   req.socket.setTimeout(Infinity);
 
-  var autoclose = setInterval(function(){
-    try{
-      console.log('autoclose?');
-      req._session.recv.didClose();
-    } catch (x) {}
-  }, 5000);
-
   messageCount = 0;
 
   var interval = setInterval(function() {
@@ -44,8 +37,7 @@ app.get('/stream', function(req, res) {
   // In that situation we want to make sure our redis channel subscription
   // is properly shut down to prevent memory leaks...and incorrect subscriber
   // counts to the channel.
-  req.on('close', function() {
-    clearInterval(autoclose);
+  req.connection.on('close', function() {
     console.log(interval);
     clearInterval(interval);
     console.log('Event Source closed');
