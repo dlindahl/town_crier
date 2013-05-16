@@ -13,7 +13,8 @@ app.get('/', function(request, response){
 
 app.get('/stream', function(req, res) {
   // let request last as long as possible
-  req.socket.setTimeout(Infinity);
+  // req.socket.setTimeout(Infinity);
+  req.socket.setTimeout(10);
 
   messageCount = 0;
 
