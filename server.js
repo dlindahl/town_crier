@@ -5,6 +5,7 @@ var http = require('http'),
     port = process.argv[2];
 
 http.createServer(function(request, response) {
+  console.log('Request received');
 
   var uri = url.parse(request.url).pathname
     , filename = path.join(process.cwd(), uri);
