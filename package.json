@@ -11,6 +11,7 @@
   },
   "dependencies" : {
     "amqp"    : "0.1.x",
-    "express" : "3.2.x"
+    "express" : "3.2.x",
+    "when"    : "2.2.x"
   }
 }
