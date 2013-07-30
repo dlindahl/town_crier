@@ -28,7 +28,7 @@ var connectToAmqp = function() {
 }();
 
 var auth = function(req, res, next) {
-  if(req.query && req.query.token == process.env.AUTH_PASSWORD) {
+  if(req.query && req.query.token == process.env.AUTH_TOKEN) {
     next();
   } else {
     return util.unauthorized(res, 'Authorization Required');
