@@ -51,7 +51,8 @@ app.get('/', function(request, response){
   );
 });
 
-app.get('/stream/:exchange/:routing_key', function(req, res) {
+var auth = express.basicAuth(process.env.AUTH_USERNAME, process.env.AUTH_PASSWORD);
+app.get('/stream/:exchange/:routing_key', auth, function(req, res) {
   console.log('Event Source opened (Exchange: "' + req.params.exchange + '" Key: "' + req.params.routing_key + '")');
 
   // let request last as long as possible
