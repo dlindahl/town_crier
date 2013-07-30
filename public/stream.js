@@ -1,4 +1,4 @@
-var source = new EventSource('/stream/notes/note.**.orders.2031894');
+var source = new EventSource('http://localhost:3000/firehose/notes/note.%23.orders.%23');
 
 source.addEventListener('message', function(e) {
   document.getElementById('stream').innerHTML = e.data;
