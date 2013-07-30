@@ -31,7 +31,7 @@ app.set('port', process.argv[2] || process.env.PORT || 3000);
 app.use(express.logger('dev'));
 app.use(express.cookieParser('your secret here'));
 app.use(express.session({secret: '1234567890QWERTY'}));
-app.use(townCrier({ mount:'/firehose' }));
+app.use('/firehose', townCrier());
 app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 
