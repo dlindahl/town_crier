@@ -52,17 +52,6 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', function(request, response){
-  console.log('Request received');
-  response.send('<html>' +
-    '<script src="stream.js"></script>' +
-    '<body>' +
-      '<h1>Hello world! <small>' + new Date() + '</small></h1>' +
-      '<div id="stream"></div>' +
-    '</body></html>'
-  );
-});
-
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server running at\n  => http://localhost:' + app.get('port') + '/\nCTRL + C to shutdown\n');
 });

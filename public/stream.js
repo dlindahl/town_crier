@@ -1,15 +1,50 @@
-var source = new EventSource('/firehose/notes/note.%23.orders.%23' + window.location.search);
+(function() {
+  var source = null;
 
-source.addEventListener('message', function(e) {
-  document.getElementById('stream').innerHTML = e.data;
-}, false);
-
-source.addEventListener('open', function(e) {
-  console.log('open');
-}, false);
-
-source.addEventListener('error', function(e) {
-  if (e.readyState == EventSource.CLOSED) {
-    console.log('closed');
+  function onOpen() {
+    document.getElementById('status').textContent = 'Connected';
+    document.getElementById('connection').textContent = 'Disconnect';
   }
-}, false);
+
+  function onMessage(e) {
+    console.log(e.data);
+    var stream = document.getElementById('stream');
+    stream.value += e.data + "\n";
+    stream.scrollTop = stream.scrollHeight;
+  }
+
+  function onError(e) {
+    document.getElementById('connection').textContent = 'Connect';
+    var status = 'Connection closed.';
+    if (e.readyState === EventSource.CLOSED) {
+      source.close();
+    } else if (e.readyState === EventSource.CONNECTING) {
+      status += ' Attempting to reconnect!';
+    } else {
+      status += ' Unknown error!';
+    }
+    document.getElementById('status').textContent = status;
+  }
+
+  function connect() {
+    source = new EventSource('/firehose/notes/note.%23.orders.%23' + window.location.search);
+
+    source.addEventListener('open', onOpen, false);
+    source.addEventListener('message', onMessage, false);
+    source.addEventListener('error', onError, false);
+  }
+
+  document.getElementById('connection').addEventListener('click', function() {
+    var label = this.textContent;
+    if(label == 'Connect') {
+      connect();
+    } else if(label == 'Disconnect') {
+      if(source) {
+        source.close();
+        onError(source);
+      }
+    }
+  });
+
+  connect();
+})();
