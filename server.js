@@ -7,26 +7,6 @@ var fs      = require('fs'),
 
 var townCrier = require('./index.js');
 
-var connectToAmqp = function() {
-  var deferred = when.defer(),
-      connection = amqp.createConnection({
-        host:      process.env.AMQP_HOST,     // TODO: Make these more configurable
-        login:     process.env.AMQP_USERNAME,
-        password:  process.env.AMQP_PASSWORD,
-        port:      5672,
-        ssl:       { enabled : false },
-        vhost:     '/',
-        authMechanism: 'AMQPLAIN'
-      });
-
-  connection.on('error', deferred.reject);
-  connection.on('ready', function() {
-    deferred.resolve(connection);
-  });
-
-  return deferred.promise;
-}();
-
 var auth = function(req, res, next) {
   if(req.query && req.query.token == process.env.AUTH_TOKEN) {
     next();
