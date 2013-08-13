@@ -27,7 +27,7 @@
   }
 
   function connect() {
-    source = new EventSource('/firehose/notes/note.%23.orders.%23' + window.location.search);
+    source = new EventSource('/firehose/sap/note.%23.orders.%23' + window.location.search);
 
     source.addEventListener('open', onOpen, false);
     source.addEventListener('message', onMessage, false);
