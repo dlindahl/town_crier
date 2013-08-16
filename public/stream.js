@@ -27,9 +27,7 @@
   }
 
   TownCrier.prototype.connect = function() {
-    var url = '/firehose/'+this.options.appName+'/'+this.options.key + window.location.search;
-
-    console.log(url);
+    var url = '/firehose/'+this.options.appName+'/'+this.options.exchange+'/'+this.options.key + window.location.search;
 
     this.source = new EventSource(url);
     this.source.addEventListener('open', cbRunner(this,'onOpen'), false);
@@ -74,6 +72,7 @@
 
   var sap = new TownCrier({
     appName:'sap',
+    exchange:'notes',
     key:'note.%23.orders.%23',
     onOpen : onOpen('sap'),
     onMessage : onMessage('sap'),
@@ -84,6 +83,7 @@
 
   var qct = new TownCrier({
     appName:'qct',
+    exchange:'order_status',
     key:'%23',
     onOpen : onOpen('qct'),
     onMessage : onMessage('qct'),
