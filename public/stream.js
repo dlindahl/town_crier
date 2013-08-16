@@ -1,8 +1,6 @@
 (function() {
   var TownCrier = function(options) {
     this.options = options || {};
-
-    this.connect();
   };
 
   function cbRunner(tc, name) {
@@ -33,6 +31,8 @@
     this.source.addEventListener('open', cbRunner(this,'onOpen'), false);
     this.source.addEventListener('message', cbRunner(this,'onMessage'), false);
     this.source.addEventListener('error', errorHandler(this), false);
+
+    return this;
   };
 
   window.TownCrier = TownCrier;
@@ -79,7 +79,7 @@
     onReconnect : onReconnect('sap'),
     onClose : onClose('sap'),
     onError : onError('sap')
-  });
+  }).connect();
 
   var qct = new TownCrier({
     appName:'qct',
@@ -90,7 +90,7 @@
     onReconnect : onReconnect('qct'),
     onClose : onClose('qct'),
     onError : onError('qct')
-  });
+  }).connect();
 
   var onClick = function(tc) {
     return function() {
@@ -108,7 +108,4 @@
 
   document.getElementById('sapConnection').addEventListener('click', onClick(sap));
   document.getElementById('qctConnection').addEventListener('click', onClick(qct));
-
-  sap.connect();
-  qct.connect();
 })();
