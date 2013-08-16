@@ -25,7 +25,15 @@
   }
 
   TownCrier.prototype.connect = function() {
-    var url = '/firehose/'+this.options.appName+'/'+this.options.exchange+'/'+this.options.key + window.location.search;
+    var url = '/firehose/'+this.options.appName+window.location.search;
+    this.options.bindings.forEach(function(binding) {
+      if(binding.exchange === '') {
+        throw new Error('Invalid Exchange name: "'+binding.exchange+'"');
+      }
+      url += '&exchanges[]=' + binding.exchange;
+      url += '&routingKeys[]=' + binding.routingKey;
+    });
+    url += '&userId=' + this.options.userId;
 
     this.source = new EventSource(url);
     this.source.addEventListener('open', cbRunner(this,'onOpen'), false);
@@ -71,9 +79,12 @@
   }
 
   var sap = new TownCrier({
+    userId : 200,
     appName:'sap',
-    exchange:'notes',
-    key:'note.%23.orders.%23',
+    bindings : [
+      { exchange:'notes', routingKey:'note.%23.orders.%23' },
+      { exchange:'order_status', routingKey:'%23' }
+    ],
     onOpen : onOpen('sap'),
     onMessage : onMessage('sap'),
     onReconnect : onReconnect('sap'),
@@ -82,9 +93,12 @@
   }).connect();
 
   var qct = new TownCrier({
+    userId : 100,
     appName:'qct',
-    exchange:'order_status',
-    key:'%23',
+    bindings : [
+      { exchange:'notes', routingKey:'note.created.orders.%23' },
+      { exchange:'order_status', routingKey:'%23' }
+    ],
     onOpen : onOpen('qct'),
     onMessage : onMessage('qct'),
     onReconnect : onReconnect('qct'),
