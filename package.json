@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "grunt-cli": "~0.1.11",
+    "grunt-contrib-jshint": "~0.8.0",
     "grunt-browserify": "~1.3.0"
   },
   "main": "lib/town_crier.js"

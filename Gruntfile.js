@@ -8,11 +8,16 @@ module.exports = function(grunt) {
           'build/town_crier.js': ['src/town_crier.js'],
         }
       }
+    },
+    jshint: {
+      all: ['Gruntfile.js', 'src/*.js']
     }
   });
+
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.loadNpmTasks('grunt-browserify');
 
   // Default task(s).
-  grunt.registerTask('default', ['browserify']);
+  grunt.registerTask('default', ['jshint', 'browserify']);
 };

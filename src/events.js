@@ -4,7 +4,7 @@ function bind(event, callback) {
       cbs = this._callbacks || (this._callbacks = {});
 
   events.forEach(function(name) {
-    cbs[name] || (cbs[name] = []);
+    if(!cbs[name]) cbs[name] = [];
     cbs[name].push(callback);
   });
 
