@@ -36,33 +36,38 @@
         "undefined" == typeof options[k] && (options[k] = globalCfg[k]);
       }), this.options = options, this.state = DISCONNECTED;
     }
-    function autoReconnect() {
+    function autoReconnect(e) {
       this.trigger("reconnect", e, this), this.connect();
     }
     function onOpen(e) {
       this.state = CONNECTED, this.trigger("open", e, this);
     }
-    function onMessage() {
-      this.trigger("message", this);
+    function onMessage(e) {
+      var data = e.data;
+      try {
+        data = JSON.parse(data);
+      } catch (err) {}
+      this.trigger("message", data, e, this);
     }
     function onError(e) {
       var srcEvent = e.currentTarget;
       srcEvent.readyState === ES.CLOSED ? this.state == CONNECTING ? // Enable auto reconnect in browsers that don't support it (i.e. FF 26.0)
-      setTimeout(autoReconnect.bind(this), this.options.retryInterval) : this.disconnect() : srcEvent.readyState === ES.CONNECTING ? (this.state = CONNECTING, 
+      setTimeout(autoReconnect.bind(this, e), this.options.retryInterval) : this.disconnect() : srcEvent.readyState === ES.CONNECTING ? (this.state = CONNECTING, 
       this.trigger("reconnect", e, this)) : this.trigger("error", e, this);
     }
     function onClose() {
       this.trigger("close", this);
     }
     function connect() {
-      var host = this.options.hostname, url = host + "/firehose/" + this.options.appName;
-      return this.options.token && (url += "?token=" + this.options.token), this.options.bindings.forEach(function(binding) {
+      var url = this.options.url;
+      return "/" !== url.substr(-1) && (url += "/"), url += this.options.appName, this.options.token && (url += "?token=" + this.options.token), 
+      this.options.bindings.forEach(function(binding) {
         if ("" === binding.exchange) throw new Error('Invalid Exchange name: "' + binding.exchange + '"');
         url += "&exchanges[]=" + binding.exchange, url += "&routingKeys[]=" + binding.routingKey;
       }), url += "&userId=" + this.options.userId, this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), 
       this._onError = onError.bind(this), this._onClose = onClose.bind(this), this.state = CONNECTING, 
       this.source = new ES(url), this.source.addEventListener("open", this._onOpen, !1), 
-      this.source.addEventListener("message", this._onOpen, !1), this.source.addEventListener("error", this._onError, !1), 
+      this.source.addEventListener("message", this._onMessage, !1), this.source.addEventListener("error", this._onError, !1), 
       this.source.addEventListener("close", this._onClose, !1), this;
     }
     function disconnect() {
@@ -75,7 +80,7 @@
     }
     var ES = window.EventSource, semver = require("./version"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = 0, CONNECTING = 1, CONNECTED = 2, globalCfg = {
       appName: null,
-      hostname: "",
+      url: window.location.href,
       token: "",
       userId: "",
       retryInterval: 3e3
