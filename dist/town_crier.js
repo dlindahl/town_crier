@@ -60,8 +60,7 @@
     }
     function connect() {
       var url = this.options.url;
-      return "/" !== url.substr(-1) && (url += "/"), url += this.options.appName, this.options.token && (url += "?token=" + this.options.token), 
-      this.options.bindings.forEach(function(binding) {
+      return this.options.token && (url += "?token=" + this.options.token), this.options.bindings.forEach(function(binding) {
         if ("" === binding.exchange) throw new Error('Invalid Exchange name: "' + binding.exchange + '"');
         url += "&exchanges[]=" + binding.exchange, url += "&routingKeys[]=" + binding.routingKey;
       }), url += "&userId=" + this.options.userId, this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), 
@@ -79,7 +78,6 @@
       this;
     }
     var ES = window.EventSource, semver = require("./version"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = 0, CONNECTING = 1, CONNECTED = 2, globalCfg = {
-      appName: null,
       url: window.location.href,
       token: "",
       userId: "",

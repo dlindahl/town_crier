@@ -9,7 +9,6 @@ var DISCONNECTED = 0,
     CONNECTING = 1,
     CONNECTED = 2,
     globalCfg = {
-      appName  : null,
       url      : window.location.href,
       token    : '',
       userId   : '',
@@ -85,8 +84,6 @@ function onClose() {
 
 function connect() {
   var url = this.options.url;
-  if(url.substr(-1) !== '/') url += '/';
-  url += this.options.appName;
 
   if(this.options.token) url += '?token='+this.options.token;
 
