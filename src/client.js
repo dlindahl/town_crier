@@ -10,7 +10,7 @@ var DISCONNECTED = 0,
     CONNECTED = 2,
     globalCfg = {
       appName  : null,
-      hostname : '',
+      url      : window.location.href,
       token    : '',
       userId   : '',
       retryInterval : 3000,
@@ -84,8 +84,9 @@ function onClose() {
 }
 
 function connect() {
-  var host = this.options.hostname,
-      url = host+'/firehose/'+this.options.appName;
+  var url = this.options.url;
+  if(url.substr(-1) !== '/') url += '/';
+  url += this.options.appName;
 
   if(this.options.token) url += '?token='+this.options.token;
 
