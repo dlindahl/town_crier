@@ -1,5 +1,6 @@
 var ES      = window.EventSource,
     semver  = require('./version'),
+    errors  = require('./errors'),
     events  = require('./events'),
     bind    = events.bind,
     unbind  = events.unbind,
@@ -9,9 +10,9 @@ var DISCONNECTED = ES.CLOSED,
     CONNECTING = ES.CONNECTING,
     CONNECTED = ES.OPEN,
     globalCfg = {
-      url      : window.location.href,
-      token    : '',
-      userId   : '',
+      url      : null,
+      token    : null,
+      userId   : null,
       retryInterval : 3000,
     };
 
@@ -85,7 +86,12 @@ function onClose(e) {
 function connect() {
   var url = this.options.url;
 
-  if(this.options.token) url += '?token='+this.options.token;
+  if(!url || url === '') {
+    throw new errors.InvalidConfiguration('URL cannot be blank');
+  }
+
+  if(this.options.token)  url += '?token='+this.options.token;
+  if(this.options.userId) url += '&userId=' + this.options.userId;
 
   this.options.bindings.forEach(function(binding) {
     if(binding.exchange === '') {
@@ -94,7 +100,6 @@ function connect() {
     url += '&exchanges[]=' + binding.exchange;
     url += '&routingKeys[]=' + binding.routingKey;
   });
-  url += '&userId=' + this.options.userId;
 
   this._onOpen    = onOpen.bind(this);
   this._onMessage = onMessage.bind(this);

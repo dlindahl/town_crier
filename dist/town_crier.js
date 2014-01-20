@@ -60,14 +60,16 @@
     }
     function connect() {
       var url = this.options.url;
-      return this.options.token && (url += "?token=" + this.options.token), this.options.bindings.forEach(function(binding) {
+      if (!url || "" === url) throw new errors.InvalidConfiguration("URL cannot be blank");
+      return this.options.token && (url += "?token=" + this.options.token), this.options.userId && (url += "&userId=" + this.options.userId), 
+      this.options.bindings.forEach(function(binding) {
         if ("" === binding.exchange) throw new Error('Invalid Exchange name: "' + binding.exchange + '"');
         url += "&exchanges[]=" + binding.exchange, url += "&routingKeys[]=" + binding.routingKey;
-      }), url += "&userId=" + this.options.userId, this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), 
-      this._onError = onError.bind(this), this._onClose = onClose.bind(this), this.state = CONNECTING, 
-      this.source = new ES(url), this.source.addEventListener("open", this._onOpen, !1), 
-      this.source.addEventListener("message", this._onMessage, !1), this.source.addEventListener("error", this._onError, !1), 
-      this.source.addEventListener("close", this._onClose, !1), this;
+      }), this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), this._onError = onError.bind(this), 
+      this._onClose = onClose.bind(this), this.state = CONNECTING, this.source = new ES(url), 
+      this.source.addEventListener("open", this._onOpen, !1), this.source.addEventListener("message", this._onMessage, !1), 
+      this.source.addEventListener("error", this._onError, !1), this.source.addEventListener("close", this._onClose, !1), 
+      this;
     }
     function disconnect() {
       return this.source.close(), this._onOpen && (this.source.removeEventListener("open", this._onOpen), 
@@ -77,10 +79,10 @@
       delete this._onClose), delete this.source, this.state = DISCONNECTED, this.trigger("close", this), 
       this;
     }
-    var ES = window.EventSource, semver = require("./version"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = ES.CLOSED, CONNECTING = ES.CONNECTING, CONNECTED = ES.OPEN, globalCfg = {
-      url: window.location.href,
-      token: "",
-      userId: "",
+    var ES = window.EventSource, semver = require("./version"), errors = require("./errors"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = ES.CLOSED, CONNECTING = ES.CONNECTING, CONNECTED = ES.OPEN, globalCfg = {
+      url: null,
+      token: null,
+      userId: null,
       retryInterval: 3e3
     };
     TownCrier.__defineGetter__("config", function() {
@@ -98,10 +100,26 @@
       off: unbind
     }, module.exports = TC;
   }, {
-    "./events": 2,
-    "./version": 4
+    "./errors": 2,
+    "./events": 3,
+    "./version": 5
   } ],
-  2: [ function(require, module) {
+  2: [ function(require, module, exports) {
+    // Base TownCrier Error.
+    function TownCrierError(msg) {
+      Error.call(this), Error.captureStackTrace(this, arguments.callee), this.message = msg;
+    }
+    TownCrierError.prototype = Error.prototype, TownCrierError.prototype.name = "TownCrierError", 
+    exports.TownCrierError = TownCrierError;
+    var errors = [ [ "InvalidConfiguration", "Invalid configuration" ] ];
+    errors.forEach(function(err) {
+      var errorName = err[0], defaultMsg = err[1];
+      errorFn = exports[errorName] = function(msg) {
+        TownCrierError.call(this, msg || defaultMsg);
+      }, errorFn.prototype = TownCrierError.prototype, errorFn.prototype.name = "TownCrierError::" + errorName;
+    });
+  }, {} ],
+  3: [ function(require, module) {
     function bind(event, callback) {
       var events = event.split(" "), cbs = this._callbacks || (this._callbacks = {});
       return events.forEach(function(name) {
@@ -131,12 +149,12 @@
       trigger: trigger
     };
   }, {} ],
-  3: [ function(require) {
+  4: [ function(require) {
     window.TownCrier = require("./client");
   }, {
     "./client": 1
   } ],
-  4: [ function(require, module) {
+  5: [ function(require, module) {
     module.exports = "0.0.1";
   }, {} ]
-}, {}, [ 3 ]);
+}, {}, [ 4 ]);
