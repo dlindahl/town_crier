@@ -78,8 +78,8 @@ function onError(e) {
   }
 }
 
-function onClose() {
-  this.trigger('close', this);
+function onClose(e) {
+  this.trigger('close', e, this);
 }
 
 function connect() {

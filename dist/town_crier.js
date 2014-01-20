@@ -55,8 +55,8 @@
       setTimeout(autoReconnect.bind(this, e), this.options.retryInterval) : this.disconnect() : srcEvent.readyState === ES.CONNECTING ? (this.state = CONNECTING, 
       this.trigger("reconnect", e, this)) : this.trigger("error", e, this);
     }
-    function onClose() {
-      this.trigger("close", this);
+    function onClose(e) {
+      this.trigger("close", e, this);
     }
     function connect() {
       var url = this.options.url;
