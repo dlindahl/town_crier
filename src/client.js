@@ -5,9 +5,9 @@ var ES      = window.EventSource,
     unbind  = events.unbind,
     trigger = events.trigger;
 
-var DISCONNECTED = 0,
-    CONNECTING = 1,
-    CONNECTED = 2,
+var DISCONNECTED = ES.CLOSED,
+    CONNECTING = ES.CONNECTING,
+    CONNECTED = ES.OPEN,
     globalCfg = {
       url      : window.location.href,
       token    : '',

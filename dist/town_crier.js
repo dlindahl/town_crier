@@ -77,7 +77,7 @@
       delete this._onClose), delete this.source, this.state = DISCONNECTED, this.trigger("close", this), 
       this;
     }
-    var ES = window.EventSource, semver = require("./version"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = 0, CONNECTING = 1, CONNECTED = 2, globalCfg = {
+    var ES = window.EventSource, semver = require("./version"), events = require("./events"), bind = events.bind, unbind = events.unbind, trigger = events.trigger, DISCONNECTED = ES.CLOSED, CONNECTING = ES.CONNECTING, CONNECTED = ES.OPEN, globalCfg = {
       url: window.location.href,
       token: "",
       userId: "",
