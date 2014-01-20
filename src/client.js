@@ -51,8 +51,14 @@ function onOpen(e) {
   this.trigger('open', e, this);
 }
 
-function onMessage() {
-  this.trigger('message', this);
+function onMessage(e) {
+  var data = e.data;
+  try {
+    data = JSON.parse(data);
+  } catch(err) {
+    // No-op. Payload wasn't JSON
+  }
+  this.trigger('message', data, e, this);
 }
 
 function onError(e) {
@@ -101,10 +107,10 @@ function connect() {
 
   this.source = new ES(url);
 
-  this.source.addEventListener('open',    this._onOpen,  false);
-  this.source.addEventListener('message', this._onOpen,  false);
-  this.source.addEventListener('error',   this._onError, false);
-  this.source.addEventListener('close',   this._onClose, false);
+  this.source.addEventListener('open',    this._onOpen,    false);
+  this.source.addEventListener('message', this._onMessage, false);
+  this.source.addEventListener('error',   this._onError,   false);
+  this.source.addEventListener('close',   this._onClose,   false);
 
   return this;
 }
