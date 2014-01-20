@@ -1,0 +1,1 @@
+window.TownCrier = require('./client');
