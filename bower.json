@@ -1,0 +1,13 @@
+{
+  "name" : "town_crier",
+  "version" : "0.0.1",
+  "main" : "dist/town_crier.js",
+  "ignore" : [
+    "lib/*",
+    "index.js"
+  ],
+  "dependencies" : {
+  },
+  "devDependencies" : {
+  }
+}
