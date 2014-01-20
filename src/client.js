@@ -41,7 +41,7 @@ TownCrier.__defineGetter__('config', function() {
   return Object.create(globalCfg);
 });
 
-function autoReconnect() {
+function autoReconnect(e) {
   this.trigger('reconnect', e, this);
   this.connect();
 }
@@ -61,7 +61,7 @@ function onError(e) {
   if (srcEvent.readyState === ES.CLOSED) {
     if(this.state == CONNECTING) {
       // Enable auto reconnect in browsers that don't support it (i.e. FF 26.0)
-      setTimeout(autoReconnect.bind(this), this.options.retryInterval);
+      setTimeout(autoReconnect.bind(this, e), this.options.retryInterval);
     } else {
       this.disconnect();
     }
