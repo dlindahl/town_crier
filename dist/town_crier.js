@@ -62,7 +62,7 @@
       var errs = [];
       if ((!opts.url || opts.url && !/\S/.test(opts.url)) && errs.push("URL cannot be blank"), 
       !opts.bindings || opts.bindings && !opts.bindings.length || 0 === opts.bindings.length ? errs.push("Bindings cannot be empty") : opts.bindings.forEach(function(binding) {
-        return binding.exchange && "" !== binding.exchange ? binding.routingKey && "" !== binding.routingKey ? void 0 : (errs.push("Binding routing key cannot be blank"), 
+        return binding.exchange && /\S/.test(binding.exchange) ? binding.routingKey && /\S/.test(binding.routingKey) ? void 0 : (errs.push("Binding routing key cannot be blank"), 
         !1) : (errs.push("Binding exchange cannot be blank"), !1);
       }), errs.length > 0) throw new errors.InvalidConfiguration(errs.join(", "));
     }

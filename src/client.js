@@ -95,10 +95,10 @@ function validateConfiguration(opts) {
     errs.push('Bindings cannot be empty');
   } else {
     opts.bindings.forEach(function(binding) {
-      if(!binding.exchange || binding.exchange === '') {
+      if(!binding.exchange || !/\S/.test(binding.exchange)) {
         errs.push('Binding exchange cannot be blank');
         return false;
-      } else if(!binding.routingKey || binding.routingKey === '') {
+      } else if(!binding.routingKey || !/\S/.test(binding.routingKey)) {
         errs.push('Binding routing key cannot be blank');
         return false;
       }
