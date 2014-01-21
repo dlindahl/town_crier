@@ -32,7 +32,7 @@
     }
     // Main TownCrier constructor
     function TownCrier(options) {
-      Object.keys(globalCfg).forEach(function(k) {
+      options || (options = {}), Object.keys(globalCfg).forEach(function(k) {
         "undefined" == typeof options[k] && (options[k] = globalCfg[k]);
       }), this.options = options, this.state = DISCONNECTED;
     }
@@ -58,12 +58,19 @@
     function onClose(e) {
       this.trigger("close", e, this);
     }
+    function validateConfiguration(opts) {
+      var errs = [];
+      if ((!opts.url || opts.url && !/\S/.test(opts.url)) && errs.push("URL cannot be blank"), 
+      !opts.bindings || opts.bindings && !opts.bindings.length || 0 === opts.bindings.length ? errs.push("Bindings cannot be empty") : opts.bindings.forEach(function(binding) {
+        return binding.exchange && "" !== binding.exchange ? binding.routingKey && "" !== binding.routingKey ? void 0 : (errs.push("Binding routing key cannot be blank"), 
+        !1) : (errs.push("Binding exchange cannot be blank"), !1);
+      }), errs.length > 0) throw new errors.InvalidConfiguration(errs.join(", "));
+    }
     function connect() {
+      validateConfiguration(this.options);
       var url = this.options.url;
-      if (!url || "" === url) throw new errors.InvalidConfiguration("URL cannot be blank");
       return this.options.token && (url += "?token=" + this.options.token), this.options.userId && (url += "&userId=" + this.options.userId), 
       this.options.bindings.forEach(function(binding) {
-        if ("" === binding.exchange) throw new Error('Invalid Exchange name: "' + binding.exchange + '"');
         url += "&exchanges[]=" + binding.exchange, url += "&routingKeys[]=" + binding.routingKey;
       }), this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), this._onError = onError.bind(this), 
       this._onClose = onClose.bind(this), this.state = CONNECTING, this.source = new ES(url), 

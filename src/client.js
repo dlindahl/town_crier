@@ -29,6 +29,7 @@ function configure(options) {
 
 // Main TownCrier constructor
 function TownCrier(options) {
+  if(!options) options = {};
   Object.keys(globalCfg).forEach(function(k) {
     if(typeof options[k] === 'undefined') options[k] = globalCfg[k];
   });
@@ -83,20 +84,39 @@ function onClose(e) {
   this.trigger('close', e, this);
 }
 
-function connect() {
-  var url = this.options.url;
+function validateConfiguration(opts) {
+  var errs = [];
 
-  if(!url || url === '') {
-    throw new errors.InvalidConfiguration('URL cannot be blank');
+  if(!opts.url || (opts.url && !/\S/.test(opts.url))) {
+    errs.push('URL cannot be blank');
   }
+
+  if(!opts.bindings || (opts.bindings && !opts.bindings.length) || opts.bindings.length === 0) {
+    errs.push('Bindings cannot be empty');
+  } else {
+    opts.bindings.forEach(function(binding) {
+      if(!binding.exchange || binding.exchange === '') {
+        errs.push('Binding exchange cannot be blank');
+        return false;
+      } else if(!binding.routingKey || binding.routingKey === '') {
+        errs.push('Binding routing key cannot be blank');
+        return false;
+      }
+    });
+  }
+
+  if(errs.length > 0) throw new errors.InvalidConfiguration(errs.join(', '));
+}
+
+function connect() {
+  validateConfiguration(this.options);
+
+  var url = this.options.url;
 
   if(this.options.token)  url += '?token='+this.options.token;
   if(this.options.userId) url += '&userId=' + this.options.userId;
 
   this.options.bindings.forEach(function(binding) {
-    if(binding.exchange === '') {
-      throw new Error('Invalid Exchange name: "'+binding.exchange+'"');
-    }
     url += '&exchanges[]=' + binding.exchange;
     url += '&routingKeys[]=' + binding.routingKey;
   });
