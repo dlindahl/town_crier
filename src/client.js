@@ -117,8 +117,13 @@ function connect() {
   if(this.options.userId) url += '&userId=' + this.options.userId;
 
   this.options.bindings.forEach(function(binding) {
+    var key = binding.routingKey;
+    // Escape hashes since they are a valid URL component and will interpretted
+    // as such and will not be sent down the wire.
+    key = key.replace(/#/g, encodeURIComponent('#'));
+
     url += '&exchanges[]=' + binding.exchange;
-    url += '&routingKeys[]=' + binding.routingKey;
+    url += '&routingKeys[]=' + key;
   });
 
   this._onOpen    = onOpen.bind(this);

@@ -71,7 +71,11 @@
       var url = this.options.url;
       return this.options.token && (url += "?token=" + this.options.token), this.options.userId && (url += "&userId=" + this.options.userId), 
       this.options.bindings.forEach(function(binding) {
-        url += "&exchanges[]=" + binding.exchange, url += "&routingKeys[]=" + binding.routingKey;
+        var key = binding.routingKey;
+        // Escape hashes since they are a valid URL component and will interpretted
+        // as such and will not be sent down the wire.
+        key = key.replace(/#/g, encodeURIComponent("#")), url += "&exchanges[]=" + binding.exchange, 
+        url += "&routingKeys[]=" + key;
       }), this._onOpen = onOpen.bind(this), this._onMessage = onMessage.bind(this), this._onError = onError.bind(this), 
       this._onClose = onClose.bind(this), this.state = CONNECTING, this.source = new ES(url), 
       this.source.addEventListener("open", this._onOpen, !1), this.source.addEventListener("message", this._onMessage, !1), 
