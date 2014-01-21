@@ -32,7 +32,8 @@
   "dependencies": {
     "amqp": "0.1.x",
     "express": "3.2.x",
-    "when": "2.2.x"
+    "when": "2.2.x",
+    "node.extend": "~1.0.9"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.11",
@@ -42,6 +43,10 @@
   },
   "main": "lib/town_crier.js",
   "keywords": [
-    "amqp", "rabbitmq", "sse", "server-sent events", "eventsource"
+    "amqp",
+    "rabbitmq",
+    "sse",
+    "server-sent events",
+    "eventsource"
   ]
 }
