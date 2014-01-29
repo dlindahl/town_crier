@@ -33,7 +33,8 @@
     "amqp": "0.1.x",
     "express": "3.2.x",
     "when": "2.7.x",
-    "node.extend": "~1.0.9"
+    "node.extend": "~1.0.9",
+    "cuid" : "1.2.x"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.11",
