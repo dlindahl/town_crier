@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "amqp": "0.1.x",
-    "express": "3.2.x",
+    "express": "3.4.x",
     "when": "2.7.x",
     "node.extend": "~1.0.9",
     "cuid" : "1.2.x"
