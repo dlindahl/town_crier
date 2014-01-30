@@ -1,6 +1,6 @@
 {
   "name" : "town_crier",
-  "version" : "0.0.7",
+  "version" : "0.0.8",
   "main" : "dist/town_crier.js",
   "ignore" : [
     "lib/*",
