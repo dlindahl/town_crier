@@ -1,11 +1,10 @@
 // Base TownCrier Error.
 function TownCrierError(msg) {
-  Error.call(this);
-  Error.captureStackTrace(this, arguments.callee);
-  this.message = msg;
+  this.name = this.name || 'TownCrierError';
+  this.message = msg || this.name;
 }
-TownCrierError.prototype = Error.prototype;
-TownCrierError.prototype.name = 'TownCrierError';
+TownCrierError.prototype = new Error();
+TownCrierError.prototype.constructor = TownCrierError;
 exports.TownCrierError = TownCrierError;
 
 var errors = [
@@ -16,8 +15,8 @@ errors.forEach(function(err) {
   var errorName  = err[0],
       defaultMsg = err[1];
       errorFn    = exports[errorName] = function(msg) {
+        this.name = 'TownCrierError::'+errorName;
         TownCrierError.call(this, msg || defaultMsg);
       };
   errorFn.prototype = TownCrierError.prototype;
-  errorFn.prototype.name = 'TownCrierError::'+errorName;
 });

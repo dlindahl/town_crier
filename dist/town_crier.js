@@ -1,4 +1,4 @@
-/*! Town Crier - v0.0.8 - 2014-01-29
+/*! Town Crier - v0.0.8 - 2014-02-19
 * https://github.com/dlindahl/town_crier
 * Copyright (c) 2014 Derek Lindahl; Licensed MIT, GPL */
 !function e(t, n, r) {
@@ -118,16 +118,16 @@
   2: [ function(require, module, exports) {
     // Base TownCrier Error.
     function TownCrierError(msg) {
-      Error.call(this), Error.captureStackTrace(this, arguments.callee), this.message = msg;
+      this.name = this.name || "TownCrierError", this.message = msg || this.name;
     }
-    TownCrierError.prototype = Error.prototype, TownCrierError.prototype.name = "TownCrierError", 
+    TownCrierError.prototype = new Error(), TownCrierError.prototype.constructor = TownCrierError, 
     exports.TownCrierError = TownCrierError;
     var errors = [ [ "InvalidConfiguration", "Invalid configuration" ] ];
     errors.forEach(function(err) {
       var errorName = err[0], defaultMsg = err[1];
       errorFn = exports[errorName] = function(msg) {
-        TownCrierError.call(this, msg || defaultMsg);
-      }, errorFn.prototype = TownCrierError.prototype, errorFn.prototype.name = "TownCrierError::" + errorName;
+        this.name = "TownCrierError::" + errorName, TownCrierError.call(this, msg || defaultMsg);
+      }, errorFn.prototype = TownCrierError.prototype;
     });
   }, {} ],
   3: [ function(require, module) {
