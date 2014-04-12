@@ -6,9 +6,6 @@ var semver = require('./version');
 var errors = require('./errors');
 var EventEmitter = require('events').EventEmitter;
 
-var DISCONNECTED = ES.CLOSED;
-var CONNECTING = ES.CONNECTING;
-var CONNECTED = ES.OPEN;
 var globalCfg = {
   url : null,
   token : null,
@@ -35,8 +32,12 @@ function TownCrier(options) {
   });
 
   this.options = options;
-  this.state = DISCONNECTED;
+  this.state = TownCrier.DISCONNECTED;
 }
+TownCrier.ERROR = -1;
+TownCrier.CLOSED = ES.CLOSED;
+TownCrier.CONNECTING = ES.CONNECTING;
+TownCrier.OPEN = ES.OPEN;
 TownCrier.prototype = new EventEmitter();
 TownCrier.prototype.constructor = TownCrier;
 
@@ -50,7 +51,7 @@ function autoReconnect(e) {
 }
 
 function onOpen(e) {
-  this.state = CONNECTED;
+  this.state = TownCrier.CONNECTED;
   this.emit('open', e, this);
 }
 
@@ -68,14 +69,14 @@ function onError(e) {
   var srcEvent = e.currentTarget;
 
   if (srcEvent.readyState === ES.CLOSED) {
-    if(this.state === CONNECTING) {
+    if(this.state === TownCrier.CONNECTING) {
       // Enable auto reconnect in browsers that don't support it (i.e. FF 26.0)
       setTimeout(autoReconnect.bind(this, e), this.options.retryInterval);
     } else {
       this.disconnect();
     }
   } else if (srcEvent.readyState === ES.CONNECTING) {
-    this.state = CONNECTING;
+    this.state = TownCrier.CONNECTING;
     this.emit('reconnect', e, this);
   } else {
     this.emit('error', e, this);
@@ -133,7 +134,7 @@ function connect() {
   this._onError = onError.bind(this);
   this._onClose = onClose.bind(this);
 
-  this.state = CONNECTING;
+  this.state = TownCrier.CONNECTING;
 
   this.source = new ES(url);
 
@@ -167,7 +168,7 @@ function disconnect() {
 
   delete this.source;
 
-  this.state = DISCONNECTED;
+  this.state = TownCrier.DISCONNECTED;
 
   this.emit('close', this);
 
