@@ -1,20 +1,23 @@
-var ES      = window.EventSource,
-    semver  = require('./version'),
-    errors  = require('./errors'),
-    events  = require('./events'),
-    bind    = events.bind,
-    unbind  = events.unbind,
-    trigger = events.trigger;
+/* jshint browser:true */
+'use strict';
 
-var DISCONNECTED = ES.CLOSED,
-    CONNECTING = ES.CONNECTING,
-    CONNECTED = ES.OPEN,
-    globalCfg = {
-      url      : null,
-      token    : null,
-      userId   : null,
-      retryInterval : 3000,
-    };
+var ES = window.EventSource;
+var semver = require('./version');
+var errors = require('./errors');
+var events = require('./events');
+var bind = events.bind;
+var unbind = events.unbind;
+var trigger = events.trigger;
+
+var DISCONNECTED = ES.CLOSED;
+var CONNECTING = ES.CONNECTING;
+var CONNECTED = ES.OPEN;
+var globalCfg = {
+  url : null,
+  token : null,
+  userId : null,
+  retryInterval : 3000,
+};
 
 // Global config settings
 function configure(options) {
@@ -66,7 +69,7 @@ function onError(e) {
   var srcEvent = e.currentTarget;
 
   if (srcEvent.readyState === ES.CLOSED) {
-    if(this.state == CONNECTING) {
+    if(this.state === CONNECTING) {
       // Enable auto reconnect in browsers that don't support it (i.e. FF 26.0)
       setTimeout(autoReconnect.bind(this, e), this.options.retryInterval);
     } else {
@@ -113,7 +116,7 @@ function connect() {
 
   var url = this.options.url;
 
-  if(this.options.token)  url += '?token='+this.options.token;
+  if(this.options.token) url += '?token='+this.options.token;
   if(this.options.userId) url += '&userId=' + this.options.userId;
 
   this.options.bindings.forEach(function(binding) {
@@ -126,19 +129,19 @@ function connect() {
     url += '&routingKeys[]=' + key;
   });
 
-  this._onOpen    = onOpen.bind(this);
+  this._onOpen = onOpen.bind(this);
   this._onMessage = onMessage.bind(this);
-  this._onError   = onError.bind(this);
-  this._onClose   = onClose.bind(this);
+  this._onError = onError.bind(this);
+  this._onClose = onClose.bind(this);
 
   this.state = CONNECTING;
 
   this.source = new ES(url);
 
-  this.source.addEventListener('open',    this._onOpen,    false);
+  this.source.addEventListener('open', this._onOpen, false);
   this.source.addEventListener('message', this._onMessage, false);
-  this.source.addEventListener('error',   this._onError,   false);
-  this.source.addEventListener('close',   this._onClose,   false);
+  this.source.addEventListener('error', this._onError, false);
+  this.source.addEventListener('close', this._onClose, false);
 
   return this;
 }
@@ -177,13 +180,13 @@ var TC = TownCrier;
 TC.configure = configure;
 TC.VERSION = semver;
 TC.prototype = {
-  connect    : connect,
+  connect : connect,
   disconnect : disconnect,
-  trigger    : trigger,
-  bind       : bind,
-  unbind     : unbind,
-  on         : bind,
-  off        : unbind
+  trigger : trigger,
+  bind : bind,
+  unbind : unbind,
+  on : bind,
+  off : unbind
 };
 
 module.exports = TC;

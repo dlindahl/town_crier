@@ -1,3 +1,4 @@
+/* jshint strict:false, camelcase:false */
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json')
@@ -14,7 +15,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.config('jshint', {
-    all: ['Gruntfile.js', 'src/*.js']
+    options:{
+      jshintrc: '.jshintrc',
+    },
+    all: ['Gruntfile.js', 'src/*.js', 'lib/*.js']
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');

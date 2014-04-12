@@ -1,7 +1,9 @@
+/* jshint browser:true */
+'use strict';
+
 function bind(event, callback) {
-  var name,
-      events = event.split(' '),
-      cbs = this._callbacks || (this._callbacks = {});
+  var events = event.split(' ');
+  var cbs = this._callbacks || (this._callbacks = {});
 
   events.forEach(function(name) {
     if(!cbs[name]) cbs[name] = [];
@@ -19,8 +21,8 @@ function unbind(ev, callback) {
 
   if(!ev) return this;
 
-  var list,
-      evs = ev.split(' ');
+  var list;
+  var evs = ev.split(' ');
 
   evs.forEach(function(name) {
     list = this._callbacks[name];
@@ -49,9 +51,9 @@ function unbind(ev, callback) {
 }
 
 function trigger() {
-  var args = arguments.length === 0 ? [] : Array.prototype.slice.call(arguments, 0),
-      ev = args.shift(),
-      list = this._callbacks[ev];
+  var args = arguments.length === 0 ? [] : Array.prototype.slice.call(arguments, 0);
+  var ev = args.shift();
+  var list = this._callbacks[ev];
 
   if(!list) return;
 
@@ -65,7 +67,7 @@ function trigger() {
 }
 
 module.exports = {
-  bind    : bind,
-  unbind  : unbind,
+  bind : bind,
+  unbind : unbind,
   trigger : trigger
 };
