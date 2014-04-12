@@ -4,10 +4,7 @@
 var ES = window.EventSource;
 var semver = require('./version');
 var errors = require('./errors');
-var events = require('./events');
-var bind = events.bind;
-var unbind = events.unbind;
-var trigger = events.trigger;
+var EventEmitter = require('events').EventEmitter;
 
 var DISCONNECTED = ES.CLOSED;
 var CONNECTING = ES.CONNECTING;
@@ -40,19 +37,21 @@ function TownCrier(options) {
   this.options = options;
   this.state = DISCONNECTED;
 }
+TownCrier.prototype = new EventEmitter();
+TownCrier.prototype.constructor = TownCrier;
 
 TownCrier.__defineGetter__('config', function() {
   return Object.create(globalCfg);
 });
 
 function autoReconnect(e) {
-  this.trigger('reconnect', e, this);
+  this.emit('reconnect', e, this);
   this.connect();
 }
 
 function onOpen(e) {
   this.state = CONNECTED;
-  this.trigger('open', e, this);
+  this.emit('open', e, this);
 }
 
 function onMessage(e) {
@@ -62,7 +61,7 @@ function onMessage(e) {
   } catch(err) {
     // No-op. Payload wasn't JSON
   }
-  this.trigger('message', data, e, this);
+  this.emit('message', data, e, this);
 }
 
 function onError(e) {
@@ -77,14 +76,14 @@ function onError(e) {
     }
   } else if (srcEvent.readyState === ES.CONNECTING) {
     this.state = CONNECTING;
-    this.trigger('reconnect', e, this);
+    this.emit('reconnect', e, this);
   } else {
-    this.trigger('error', e, this);
+    this.emit('error', e, this);
   }
 }
 
 function onClose(e) {
-  this.trigger('close', e, this);
+  this.emit('close', e, this);
 }
 
 function validateConfiguration(opts) {
@@ -170,23 +169,15 @@ function disconnect() {
 
   this.state = DISCONNECTED;
 
-  this.trigger('close', this);
+  this.emit('close', this);
 
   return this;
 }
 
 // Define the public API
-var TC = TownCrier;
-TC.configure = configure;
-TC.VERSION = semver;
-TC.prototype = {
-  connect : connect,
-  disconnect : disconnect,
-  trigger : trigger,
-  bind : bind,
-  unbind : unbind,
-  on : bind,
-  off : unbind
-};
+TownCrier.configure = configure;
+TownCrier.VERSION = semver;
+TownCrier.prototype.connect = connect;
+TownCrier.prototype.disconnect = disconnect;
 
-module.exports = TC;
+module.exports = TownCrier;
