@@ -7,7 +7,7 @@ module.exports = function(grunt) {
   grunt.config('browserify', {
     dist: {
       files: {
-        'build/<%= pkg.name %>.js': ['src/<%= pkg.name %>.js'],
+        'build/client.js': ['src/<%= pkg.name %>.js'],
       }
     }
   });
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     },
     minified: {
       files: {
-        'dist/<%= pkg.name %>.min.js' : ['build/<%= pkg.name %>.js']
+        'client.min.js' : ['build/client.js']
       }
     },
     unminified: {
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         }
       },
       files: {
-        'dist/<%= pkg.name %>.js' : ['build/<%= pkg.name %>.js']
+        'client.js' : ['build/client.js']
       }
     }
   });

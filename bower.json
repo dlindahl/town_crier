@@ -1,7 +1,7 @@
 {
   "name" : "town_crier",
   "version" : "0.0.10",
-  "main" : "dist/town_crier.js",
+  "main" : "index.js",
   "ignore" : [
     "lib/*",
     "index.js"
