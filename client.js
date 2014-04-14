@@ -1,4 +1,4 @@
-/*! Town Crier - v0.0.10 - 2014-04-11
+/*! Town Crier - v0.0.11 - 2014-04-14
 * https://github.com/dlindahl/town_crier
 * Copyright (c) 2014 Derek Lindahl; Licensed MIT, GPL */
 !function e(t, n, r) {

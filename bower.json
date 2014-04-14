@@ -1,13 +1,11 @@
 {
-  "name" : "town_crier",
-  "version" : "0.0.10",
-  "main" : "index.js",
-  "ignore" : [
+  "name": "town_crier",
+  "version": "0.0.11",
+  "main": "index.js",
+  "ignore": [
     "lib/*",
     "index.js"
   ],
-  "dependencies" : {
-  },
-  "devDependencies" : {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
