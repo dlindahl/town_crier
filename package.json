@@ -2,7 +2,7 @@
   "name": "town_crier",
   "title": "Town Crier",
   "description": "AMQP to SSE bridge",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "author": {
     "name": "Derek Lindahl",
     "email": "derek.lindahl@gmail.com"
