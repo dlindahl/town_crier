@@ -8,7 +8,8 @@ var merge = require('./merge');
 var configuration = require('./configuration');
 
 function TownCrier(options) {
-  this.options = merge(options, this.constructor.config);
+  var globalCfg = merge({}, this.constructor.config);
+  this.options = merge(globalCfg, options);
   this.state = this.constructor.CLOSED;
 }
 
